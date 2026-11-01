@@ -10,6 +10,8 @@ import { Preloader } from './components/Preloader';
 import { ProductItem, CartItem } from './types';
 import { cafeAudio } from './utils/audio';
 import { HERO_CHAPTER_PROGRESS } from './utils/heroAnimation';
+import { PRODUCT_PRICES } from './utils/pricing';
+import { CAFE_VIDEOS } from './utils/media';
 
 // 5 physical products for the lineup in Video 2 & store
 const ALL_PRODUCTS: ProductItem[] = [
@@ -20,7 +22,7 @@ const ALL_PRODUCTS: ProductItem[] = [
     size: '16 oz Draft',
     format: 'On Tap',
     image: '/assets/user/img2.jpg',
-    price: 5.50,
+    price: PRODUCT_PRICES.nitroDraft,
     description: 'Cascading nitrogen micro-crema, smooth mouthfeel with sweet chocolate and candied orange note.',
     tempServed: 'Chilled / 38°F',
   },
@@ -31,7 +33,7 @@ const ALL_PRODUCTS: ProductItem[] = [
     size: '32 oz Glass',
     format: 'Amber Growler',
     image: '/assets/user/img4.jpg',
-    price: 18.00,
+    price: PRODUCT_PRICES.growler,
     description: 'Freshly filled amber glass growler of our 20-hour steeped slow cold brew. Keeps cold for 5 days.',
     tempServed: 'Keep Refrigerated',
   },
@@ -43,7 +45,7 @@ const ALL_PRODUCTS: ProductItem[] = [
     format: 'Dine & To-Go',
     image: '/assets/user/img5.jpg',
     isMainCup: true,
-    price: 4.75,
+    price: PRODUCT_PRICES.signatureCup,
     description: 'Our iconic double-walled cup with custom "BRÜN your day" sleeve, freshly pulled single origin espresso & silky pour.',
     tempServed: 'Served at 155°F',
   },
@@ -54,7 +56,8 @@ const ALL_PRODUCTS: ProductItem[] = [
     size: '12 oz (340g)',
     format: 'Whole Bean Bag',
     image: '/assets/user/img3.jpg',
-    price: 21.00,
+    video: CAFE_VIDEOS.espresso,
+    price: PRODUCT_PRICES.wholeBean,
     description: 'Specialty Grade heirloom Arabica beans roasted on our vintage cast iron drum. Notes of jasmine, bergamot, and caramel.',
     tempServed: 'Whole Bean',
   },
@@ -65,7 +68,8 @@ const ALL_PRODUCTS: ProductItem[] = [
     size: '12 fl oz Can',
     format: 'Nitro Can',
     image: '/assets/user/img6.jpg',
-    price: 4.50,
+    video: CAFE_VIDEOS.espresso,
+    price: PRODUCT_PRICES.nitroCan,
     description: 'Single-serve nitrogen-charged cold brew can. Crack open to initiate instant cascading velvet foam.',
     tempServed: 'Shake & Pour Ice Cold',
   },

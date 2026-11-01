@@ -112,7 +112,7 @@ export const NavigationDrawer: React.FC<NavigationDrawerProps> = ({
                       <span>Flagship Cafe</span>
                     </div>
                     <p className="text-[#7C7567] mt-1 text-[11px] leading-tight">
-                      123 Latte Lane, Food City
+                      Ikeja, Lagos, Nigeria
                     </p>
                   </div>
                   <div className="p-3 bg-[#EFECE3] rounded-xl">

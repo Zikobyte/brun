@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { X, Plus, Minus, Trash2, Check, ArrowRight, ShieldCheck, Truck, Coffee } from 'lucide-react';
 import { ProductItem, CartItem } from '../types';
 import { SpinningCupCanvas } from './SpinningCupCanvas';
+import { formatNaira, FREE_SHIPPING_THRESHOLD } from '../utils/pricing';
 
 interface OrderDrawerProps {
   isOpen: boolean;
@@ -28,7 +29,7 @@ export const OrderDrawer: React.FC<OrderDrawerProps> = ({
   const [selectedProductToAdd, setSelectedProductToAdd] = useState<ProductItem>(allProducts[0]);
 
   const subtotal = cartItems.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
-  const freeShippingThreshold = 35;
+  const freeShippingThreshold = FREE_SHIPPING_THRESHOLD;
   const progressToFreeShipping = Math.min(100, (subtotal / freeShippingThreshold) * 100);
 
   const handleCheckout = () => {
@@ -87,7 +88,7 @@ export const OrderDrawer: React.FC<OrderDrawerProps> = ({
                   <Truck className="w-3.5 h-3.5 text-[#2F1207]" />
                   {subtotal >= freeShippingThreshold
                     ? 'You unlocked FREE Carbon-Neutral Delivery!'
-                    : `Add $${(freeShippingThreshold - subtotal).toFixed(2)} more for free shipping`}
+                    : `Add ${formatNaira(freeShippingThreshold - subtotal)} more for free shipping`}
                 </span>
                 <span className="font-bold">{progressToFreeShipping.toFixed(0)}%</span>
               </div>
@@ -145,7 +146,7 @@ export const OrderDrawer: React.FC<OrderDrawerProps> = ({
                               {item.product.size} · {item.grind}
                             </p>
                             <p className="font-mono text-xs font-bold text-[#2F1207] mt-1">
-                              ${(item.product.price * item.quantity).toFixed(2)}
+                              {formatNaira(item.product.price * item.quantity)}
                             </p>
                           </div>
 
@@ -205,7 +206,7 @@ export const OrderDrawer: React.FC<OrderDrawerProps> = ({
                             {p.name}
                           </p>
                           <p className="text-[11px] text-[#7C7567]">{p.size}</p>
-                          <p className="text-xs font-mono font-bold text-[#2F1207] mt-1">${p.price.toFixed(2)}</p>
+                          <p className="text-xs font-mono font-bold text-[#2F1207] mt-1">{formatNaira(p.price)}</p>
                         </button>
                       ))}
                     </div>
@@ -252,7 +253,7 @@ export const OrderDrawer: React.FC<OrderDrawerProps> = ({
                 <div className="flex justify-between items-center text-sm">
                   <span className="font-cinzel text-xs font-bold text-[#5A5345]">Order Subtotal</span>
                   <span className="font-mono text-base font-bold text-[#1D1B16]">
-                    ${subtotal.toFixed(2)}
+                    {formatNaira(subtotal)}
                   </span>
                 </div>
                 <p className="text-[11px] text-[#7C7567] flex items-center gap-1.5">

@@ -15,6 +15,8 @@ import { CoffeeCup3D } from './CoffeeCup3D';
 import { getCupPose, getHeroChapter, getMouthfeelsY } from '../utils/heroAnimation';
 import { BrunCafeMenuSections } from './BrunCafeMenuSections';
 import { SpinningCupCanvas } from './SpinningCupCanvas';
+import { ViewportVideo } from './ViewportVideo';
+import { formatNaira } from '../utils/pricing';
 
 interface HeroScrollContainerProps {
   onOpenRoaster: () => void;
@@ -81,7 +83,7 @@ export const HeroScrollContainer: React.FC<HeroScrollContainerProps> = ({
     },
   ];
 
-  // Initial 1-spin turntable in the center, then transitions to lower-left
+  // Initial centered turntable, followed by the scroll-driven cup choreography.
   useEffect(() => {
     if (!isPreloaderDone) return;
     let animation: ReturnType<typeof animate> | undefined;
@@ -233,7 +235,6 @@ export const HeroScrollContainer: React.FC<HeroScrollContainerProps> = ({
         {/* Editorial Vertical Left Guide Line (Local to Hero Track) */}
         <div className="absolute top-0 bottom-0 left-12 sm:left-16 w-px bg-[#E5DFD3] pointer-events-none z-30 hidden md:block" />
 
-        {/* PERSISTENT 3D COFFEE CUP OVERLAY (Three.js 3D Model with 360 Spin) */}
         {/* STICKY SCENE STAGE (Full Viewport Height) */}
         <div className="sticky top-0 w-full h-screen overflow-hidden flex flex-col justify-between pt-20 pb-6 px-4 sm:px-8 lg:px-16 select-none">
         <CoffeeCup3D
@@ -257,7 +258,8 @@ export const HeroScrollContainer: React.FC<HeroScrollContainerProps> = ({
           className="absolute inset-0 flex flex-col items-center justify-center -z-10"
         >
           {/* Main Monumental BRÜN Brand Title with Wavy Kinetic Feel in #2F1207 */}
-          <div className="flex items-baseline justify-center select-none text-center w-full leading-[0.84] text-[#2F1207] tracking-[-0.035em]">
+          <div className="hero-wordmark select-none text-center w-full leading-[0.84] text-[#2F1207] tracking-[-0.035em]">
+            <div className="hero-wordmark-left flex items-baseline justify-end">
             {/* Letter B */}
             <motion.span
               animate={heroAnimating ? { y: [0, -16, 0, 16, 0], rotate: [-1.2, 1.2, -1.2] } : { y: 0, rotate: 0 }}
@@ -276,6 +278,9 @@ export const HeroScrollContainer: React.FC<HeroScrollContainerProps> = ({
               R
             </motion.span>
 
+            </div>
+            <div aria-hidden="true" />
+            <div className="hero-wordmark-right flex items-baseline justify-start">
             {/* Letter Ü with two distinct animated dots */}
             <motion.div
               animate={heroAnimating ? { y: [0, -16, 0, 16, 0], rotate: [-1.2, 1.2, -1.2] } : { y: 0, rotate: 0 }}
@@ -300,6 +305,7 @@ export const HeroScrollContainer: React.FC<HeroScrollContainerProps> = ({
             >
               N
             </motion.span>
+            </div>
           </div>
 
           {/* Kinetic Undulating Wave Ribbon & Subtitle Accent in #2F1207 */}
@@ -825,7 +831,9 @@ export const HeroScrollContainer: React.FC<HeroScrollContainerProps> = ({
 
                   {/* Product Visual Area: Occupies Full Width of Card with 3D Spinning Cup */}
                   <div className="h-36 sm:h-44 w-full flex items-center justify-center p-1 my-1 relative overflow-hidden rounded-xl bg-[#FAF7F0]/60 border border-[#EFECE3]">
-                    {shouldUse3DCup ? (
+                    {item.video ? (
+                      <ViewportVideo src={item.video} label={item.name} active={lineupActive} />
+                    ) : shouldUse3DCup ? (
                       <div className="w-full h-full relative flex items-center justify-center">
                         <SpinningCupCanvas
                           className="w-full h-full min-h-[140px]"
@@ -854,7 +862,7 @@ export const HeroScrollContainer: React.FC<HeroScrollContainerProps> = ({
                     </h4>
                     <p className="text-[10px] text-[#7C7567] line-clamp-1">{item.subtitle}</p>
                     <p className="font-mono text-xs font-bold text-[#2F1207]">
-                      ${item.price.toFixed(2)}
+                      {formatNaira(item.price)}
                     </p>
                   </div>
 

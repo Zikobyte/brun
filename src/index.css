@@ -40,6 +40,26 @@
   text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.6), -1px -1px 0px rgba(0, 0, 0, 0.05);
 }
 
+.hero-wordmark {
+  display: grid;
+  grid-template-columns: 1fr 40vw 1fr;
+  align-items: center;
+}
+
+.hero-wordmark .font-bebas {
+  font-size: 20vw;
+}
+
+@media (max-width: 639px) {
+  .hero-wordmark {
+    grid-template-columns: 1fr 52vw 1fr;
+  }
+
+  .hero-wordmark .font-bebas {
+    font-size: 18vw;
+  }
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 7px;

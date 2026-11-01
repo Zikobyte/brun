@@ -18,6 +18,9 @@ import {
   Plus,
 } from 'lucide-react';
 import { SpinningCupCanvas } from './SpinningCupCanvas';
+import { ViewportVideo } from './ViewportVideo';
+import { CAFE_VIDEOS } from '../utils/media';
+import { formatNaira, PRODUCT_PRICES } from '../utils/pricing';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -115,12 +118,12 @@ export const BrunCafeMenuSections: React.FC<BrunCafeMenuSectionsProps> = ({ onOp
     {
       title: 'Espresso Extraction & Steaming',
       subtitle: 'The Craft of BRUN',
-      url: 'https://pub-ee5a826221134162b53dc4a7b9eeca2a.r2.dev/downloadgram.org_AQNmtk9TD65D3dZPw6YReh5Agw8ZJ6vFGW4Rnrp_kOnOZIfiWvo_xmbHQai2Dd9C3veTSrOm3ZgenVBAhPCN2ZaObuZ6DazCyl4yDtY.mp4',
+      url: CAFE_VIDEOS.espresso,
     },
     {
       title: 'Artisan Bakery Fresh Bakes',
       subtitle: 'Morning Viennoiserie',
-      url: 'https://pub-ee5a826221134162b53dc4a7b9eeca2a.r2.dev/downloadgram.org_AQNa5jn1zlQdT8BV4vgTGDxvvmSNGxD6r6qosXW5YJBZS9SOCpzFT0Vq-P4blN9BogB393sHfPqHt_OLahEF1FWQuPurwSQGzmYlld4.mp4',
+      url: CAFE_VIDEOS.bakery,
     },
     {
       title: 'Barista Pour & Signature Latte Art',
@@ -130,7 +133,7 @@ export const BrunCafeMenuSections: React.FC<BrunCafeMenuSectionsProps> = ({ onOp
     {
       title: 'Atmosphere & Golden Hour Lounge',
       subtitle: 'Dine-In Space',
-      url: 'https://pub-ee5a826221134162b53dc4a7b9eeca2a.r2.dev/downloadgram.org_AQMqWm2xrtsAT5-LrHenb5WAbjVnQdxjW6zRsA2hYijKE8SviltAMSzR6Wadn5Xlmau4K6fjxkvhkQsSCYpjCa7pS9Ga8ZR_0RE79Vo.mp4',
+      url: CAFE_VIDEOS.atmosphere,
     },
   ];
 
@@ -320,8 +323,8 @@ export const BrunCafeMenuSections: React.FC<BrunCafeMenuSectionsProps> = ({ onOp
                   <span>Location:</span>
                 </p>
                 <p className="font-medium text-[#1D1B16]">BRUN Coffee Shop & Bakery</p>
-                <p>123 Latte Lane</p>
-                <p>Food City, FC 12345</p>
+                <p>Ikeja, Lagos</p>
+                <p>Nigeria</p>
               </div>
 
               {/* CTA Button */}
@@ -505,18 +508,18 @@ export const BrunCafeMenuSections: React.FC<BrunCafeMenuSectionsProps> = ({ onOp
               </h3>
               <div className="space-y-4 divide-y divide-[#EBE4D5]/60">
                 {[
-                  { name: 'BRUN Signature Cup', price: '$4.75', desc: 'Our iconic single-origin Ethiopian espresso pull served in our signature double-walled cup.' },
-                  { name: 'Espresso Single / Double', price: '$2.50', desc: 'Rich and bold single origin extraction with sweet citrus crema.' },
-                  { name: 'Americano', price: '$3.00', desc: 'Espresso with hot water for a smooth, robust flavor.' },
-                  { name: 'Latte', price: '$4.00', desc: 'Espresso with silky microfoam milk. Flavors: Vanilla, Salted Caramel, Hazelnut, Mocha.' },
-                  { name: 'Cappuccino', price: '$4.00', desc: 'Equal parts espresso, velvety steamed milk, and dense foam.' },
-                  { name: 'Flat White', price: '$4.00', desc: 'Silky microfoam over a double ristretto shot of heirloom beans.' },
-                  { name: 'Nitro Cold Brew', price: '$5.50', desc: 'Cascading nitrogen-infused slow cold brew served ice cold.' },
+                  { name: 'BRUN Signature Cup', price: PRODUCT_PRICES.signatureCup, desc: 'Our iconic single-origin Ethiopian espresso pull served in our signature double-walled cup.' },
+                  { name: 'Espresso Single / Double', price: 6000, desc: 'Rich and bold single origin extraction with sweet citrus crema.' },
+                  { name: 'Americano', price: 6500, desc: 'Espresso with hot water for a smooth, robust flavor.' },
+                  { name: 'Latte', price: 8000, desc: 'Espresso with silky microfoam milk. Flavors: Vanilla, Salted Caramel, Hazelnut, Mocha.' },
+                  { name: 'Cappuccino', price: 8000, desc: 'Equal parts espresso, velvety steamed milk, and dense foam.' },
+                  { name: 'Flat White', price: 8000, desc: 'Silky microfoam over a double ristretto shot of heirloom beans.' },
+                  { name: 'Nitro Cold Brew', price: PRODUCT_PRICES.nitroDraft, desc: 'Cascading nitrogen-infused slow cold brew served ice cold.' },
                 ].map((item, idx) => (
                   <div key={idx} className={idx > 0 ? 'pt-3' : ''}>
                     <div className="flex justify-between items-baseline">
                       <span className="font-cinzel text-sm font-bold text-[#1D1B16]">{item.name}</span>
-                      <span className="font-mono text-sm font-bold text-[#1D1B16]">{item.price}</span>
+                      <span className="font-mono text-sm font-bold text-[#1D1B16]">{formatNaira(item.price)}</span>
                     </div>
                     <p className="text-xs text-[#736B5E] mt-0.5 font-sans-clean leading-relaxed">{item.desc}</p>
                   </div>
@@ -567,7 +570,7 @@ export const BrunCafeMenuSections: React.FC<BrunCafeMenuSectionsProps> = ({ onOp
                   className="px-5 py-2.5 bg-[#2F1207] hover:bg-[#1a0a04] text-white text-xs font-bold uppercase tracking-widest rounded-xl transition-all shadow cursor-pointer active:scale-95 flex items-center gap-2"
                 >
                   <Plus className="w-3.5 h-3.5" />
-                  <span>Order Now · $4.75</span>
+                  <span>Order Now · {formatNaira(PRODUCT_PRICES.signatureCup)}</span>
                 </button>
               </div>
             </motion.div>
@@ -598,17 +601,20 @@ export const BrunCafeMenuSections: React.FC<BrunCafeMenuSectionsProps> = ({ onOp
               <h3 className="font-cinzel text-xl sm:text-2xl font-bold text-[#1D1B16]">
                 Specialty Lattes
               </h3>
+              <div className="relative aspect-video rounded-2xl overflow-hidden bg-neutral-900 border border-[#EBE4D5]">
+                <ViewportVideo src={CAFE_VIDEOS.atmosphere} label="Specialty Lattes" />
+              </div>
               <div className="space-y-4 divide-y divide-[#EBE4D5]/60">
                 {[
-                  { name: 'Ceremonial Matcha Latte', price: '$4.50', desc: 'Stone-ground ceremonial Uji matcha blended with steamed oat milk.' },
-                  { name: 'Golden Turmeric Latte', price: '$4.50', desc: 'Turmeric, fresh ginger, and cinnamon with steamed coconut milk for a warm botanical boost.' },
-                  { name: 'Spiced Chai Latte', price: '$4.00', desc: 'Slow-simmered whole spices and black tea steeped with creamy milk.' },
-                  { name: 'Wild Honey Lavender Latte', price: '$5.00', desc: 'Heirloom espresso, organic lavender blossom syrup, and raw mountain honey.' },
+                  { name: 'Ceremonial Matcha Latte', price: 9500, desc: 'Stone-ground ceremonial Uji matcha blended with steamed oat milk.' },
+                  { name: 'Golden Turmeric Latte', price: 9500, desc: 'Turmeric, fresh ginger, and cinnamon with steamed coconut milk for a warm botanical boost.' },
+                  { name: 'Spiced Chai Latte', price: 8000, desc: 'Slow-simmered whole spices and black tea steeped with creamy milk.' },
+                  { name: 'Wild Honey Lavender Latte', price: 10000, desc: 'Heirloom espresso, organic lavender blossom syrup, and raw mountain honey.' },
                 ].map((item, idx) => (
                   <div key={idx} className={idx > 0 ? 'pt-3' : ''}>
                     <div className="flex justify-between items-baseline">
                       <span className="font-cinzel text-sm font-bold text-[#1D1B16]">{item.name}</span>
-                      <span className="font-mono text-sm font-bold text-[#1D1B16]">{item.price}</span>
+                      <span className="font-mono text-sm font-bold text-[#1D1B16]">{formatNaira(item.price)}</span>
                     </div>
                     <p className="text-xs text-[#736B5E] mt-0.5 font-sans-clean leading-relaxed">{item.desc}</p>
                   </div>
@@ -626,17 +632,20 @@ export const BrunCafeMenuSections: React.FC<BrunCafeMenuSectionsProps> = ({ onOp
               <h3 className="font-cinzel text-xl sm:text-2xl font-bold text-[#1D1B16]">
                 Tea & Other Beverages
               </h3>
+              <div className="relative aspect-video rounded-2xl overflow-hidden bg-neutral-900 border border-[#EBE4D5]">
+                <ViewportVideo src={CAFE_VIDEOS.bakery} label="Tea & Other Beverages" />
+              </div>
               <div className="space-y-4 divide-y divide-[#EBE4D5]/60">
                 {[
-                  { name: 'Artisan Loose Leaf Tea', price: '$3.50', desc: 'Selection of organic Earl Grey, Sencha Green, Moroccan Mint, and Chamomile.' },
-                  { name: 'Valrhona Hot Chocolate', price: '$4.50', desc: '70% French dark cocoa melted into steamed whole milk with homemade marshmallow.' },
-                  { name: 'Cascara Sparkling Spritz', price: '$5.00', desc: 'Coffee cherry tea infused with blood orange and sparkling spring water.' },
-                  { name: 'Cold-Pressed Citrus Juice', price: '$5.50', desc: 'Fresh Valencia oranges, ginger, and turmeric pressed cold daily.' },
+                  { name: 'Artisan Loose Leaf Tea', price: 6000, desc: 'Selection of organic Earl Grey, Sencha Green, Moroccan Mint, and Chamomile.' },
+                  { name: 'Valrhona Hot Chocolate', price: 8500, desc: '70% French dark cocoa melted into steamed whole milk with homemade marshmallow.' },
+                  { name: 'Cascara Sparkling Spritz', price: 9000, desc: 'Coffee cherry tea infused with blood orange and sparkling spring water.' },
+                  { name: 'Cold-Pressed Citrus Juice', price: 9000, desc: 'Fresh Valencia oranges, ginger, and turmeric pressed cold daily.' },
                 ].map((item, idx) => (
                   <div key={idx} className={idx > 0 ? 'pt-3' : ''}>
                     <div className="flex justify-between items-baseline">
                       <span className="font-cinzel text-sm font-bold text-[#1D1B16]">{item.name}</span>
-                      <span className="font-mono text-sm font-bold text-[#1D1B16]">{item.price}</span>
+                      <span className="font-mono text-sm font-bold text-[#1D1B16]">{formatNaira(item.price)}</span>
                     </div>
                     <p className="text-xs text-[#736B5E] mt-0.5 font-sans-clean leading-relaxed">{item.desc}</p>
                   </div>
@@ -685,18 +694,21 @@ export const BrunCafeMenuSections: React.FC<BrunCafeMenuSectionsProps> = ({ onOp
               <h3 className="font-cinzel text-xl sm:text-2xl font-bold text-[#1D1B16]">
                 Pastries & Baked Goods
               </h3>
+              <div className="relative aspect-video rounded-2xl overflow-hidden bg-neutral-900 border border-[#EBE4D5]">
+                <ViewportVideo src={CAFE_VIDEOS.espresso} label="Pastries & Baked Goods" />
+              </div>
               <div className="space-y-4 divide-y divide-[#EBE4D5]/60">
                 {[
-                  { name: 'Butter Croissant', price: '$3.50', desc: 'Laminated with pure Normandy butter, golden and flaky with honeyed honeycomb layers.' },
-                  { name: 'Pain au Chocolat', price: '$4.25', desc: 'Double batons of Valrhona dark chocolate wrapped in crisp laminated dough.' },
-                  { name: 'Cardamom Sourdough Bun', price: '$4.00', desc: 'Wild fermented dough infused with crushed green cardamom and Swedish pearl sugar.' },
-                  { name: 'Almond Frangipane Tart', price: '$4.50', desc: 'Crisp shortcrust shell filled with rich almond cream and toasted sliced almonds.' },
-                  { name: 'Valrhona Fudgy Brownie', price: '$3.75', desc: 'Dark espresso-infused chocolate brownie with cracked sea salt top.' },
+                  { name: 'Butter Croissant', price: 6000, desc: 'Laminated with pure Normandy butter, golden and flaky with honeyed honeycomb layers.' },
+                  { name: 'Pain au Chocolat', price: 7500, desc: 'Double batons of Valrhona dark chocolate wrapped in crisp laminated dough.' },
+                  { name: 'Cardamom Sourdough Bun', price: 7000, desc: 'Wild fermented dough infused with crushed green cardamom and Swedish pearl sugar.' },
+                  { name: 'Almond Frangipane Tart', price: 8500, desc: 'Crisp shortcrust shell filled with rich almond cream and toasted sliced almonds.' },
+                  { name: 'Valrhona Fudgy Brownie', price: 6500, desc: 'Dark espresso-infused chocolate brownie with cracked sea salt top.' },
                 ].map((item, idx) => (
                   <div key={idx} className={idx > 0 ? 'pt-3' : ''}>
                     <div className="flex justify-between items-baseline">
                       <span className="font-cinzel text-sm font-bold text-[#1D1B16]">{item.name}</span>
-                      <span className="font-mono text-sm font-bold text-[#1D1B16]">{item.price}</span>
+                      <span className="font-mono text-sm font-bold text-[#1D1B16]">{formatNaira(item.price)}</span>
                     </div>
                     <p className="text-xs text-[#736B5E] mt-0.5 font-sans-clean leading-relaxed">{item.desc}</p>
                   </div>
@@ -867,8 +879,8 @@ export const BrunCafeMenuSections: React.FC<BrunCafeMenuSectionsProps> = ({ onOp
             </h4>
             <div className="text-xs sm:text-sm text-white/85 space-y-1 font-sans-clean leading-relaxed">
               <p className="font-bold text-white">BRUN Coffee Shop & Bakery</p>
-              <p>123 Latte Lane</p>
-              <p>Food City, FC 12345</p>
+              <p>Ikeja, Lagos</p>
+              <p>Nigeria</p>
               <p className="pt-2 text-[#FDE68A] font-mono text-xs">hello@bruncafe.com</p>
               <p className="text-white/70 text-xs">+1 (555) 728-2786</p>
             </div>

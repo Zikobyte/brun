@@ -31,7 +31,7 @@ test('cup transforms are continuous across every scene boundary during entrance 
   }
 });
 
-test('initial and wordmark-overlapping cup placements fit mobile, tablet and short desktop viewports', () => {
+test('initial and centered cup placements fit mobile, tablet and short desktop viewports', () => {
   for (const [width, height] of [[320, 568], [390, 844], [768, 1024], [1440, 900], [1386, 486]]) {
     const canvasWidth = width < 640 ? 380 : width < 768 ? 460 : 540;
     const canvasHeight = width < 640 ? 480 : width < 768 ? 580 : 650;
@@ -47,13 +47,16 @@ test('initial and wordmark-overlapping cup placements fit mobile, tablet and sho
   }
 });
 
-test('settled hero cup overlaps the left half of the wordmark instead of docking below it', () => {
+test('hero cup stays centered and its canvas fits between BR and UN before scrolling', () => {
   for (const [width, height] of [[390, 844], [768, 1024], [1440, 900]]) {
-    const centered = getCupPose(0, 0, width, height);
-    const settled = getCupPose(0, 1, width, height);
-    assert.ok(settled.x < 0);
-    assert.ok(settled.y <= 0 && settled.y >= -height * 0.025);
-    assert.ok(settled.scale >= centered.scale * 0.85);
+    const canvasWidth = width < 640 ? 380 : width < 768 ? 460 : 540;
+    const gap = width * (width < 640 ? 0.52 : 0.40);
+    for (const entrance of [0, 0.5, 1]) {
+      const pose = getCupPose(0, entrance, width, height);
+      assert.equal(pose.x, 0);
+      assert.equal(pose.y, 0);
+      assert.ok(canvasWidth * pose.scale < gap);
+    }
   }
 });
 

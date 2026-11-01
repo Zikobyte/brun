@@ -24,6 +24,7 @@ export interface ProductItem {
   size: string;
   format: string;
   image: string;
+  video?: string;
   isMainCup?: boolean;
   price: number;
   description: string;
