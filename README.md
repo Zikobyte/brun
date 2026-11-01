@@ -41,6 +41,9 @@ View your app in AI Studio: https://ai.studio/apps/56d5463b-9818-4881-889d-c1fd6
 - The gallery and footer wordmark use two identical groups
   for seamless looping, pause offscreen/on hover, and respect reduced motion.
   The footer keeps one interactive 3D cup beside the scrolling BRUN wordmark.
+- Cart thumbnails use the shared 3D cup in a dark espresso finish with white
+  artwork, without changing product names, pricing, or quantity controls. The
+  rest of the page retains the original light cup design.
   The cafe video only autoplays while visible.
 - Reduced-motion preferences disable automatic cup rotation, gallery movement
   and parallax; the cafe video exposes playback controls instead.

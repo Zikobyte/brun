@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { useInView } from 'motion/react';
-import { createBrunSleeveCanvas } from '../utils/sleeveTexture';
+import { createBrunSleeveCanvas, type CupAppearance } from '../utils/sleeveTexture';
 
 interface SpinningCupCanvasProps {
   className?: string;
@@ -12,6 +12,7 @@ interface SpinningCupCanvasProps {
   active?: boolean;
   docked?: boolean;
   initialTurn?: boolean;
+  appearance?: CupAppearance;
 }
 
 const CupRenderer: React.FC<SpinningCupCanvasProps> = ({
@@ -23,6 +24,7 @@ const CupRenderer: React.FC<SpinningCupCanvasProps> = ({
   active = true,
   docked = false,
   initialTurn = false,
+  appearance = 'light',
 }) => {
   const mountRef = useRef<HTMLDivElement>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
@@ -103,7 +105,7 @@ const CupRenderer: React.FC<SpinningCupCanvasProps> = ({
     // Cup Body
     const cupGeo = new THREE.CylinderGeometry(topRadius, bottomRadius, cupHeight, 64, 1, false);
     const cupMat = new THREE.MeshStandardMaterial({
-      color: 0xf9f7f2,
+      color: appearance === 'dark' ? 0x17120f : 0xf9f7f2,
       roughness: 0.88,
       metalness: 0.02,
     });
@@ -141,7 +143,7 @@ const CupRenderer: React.FC<SpinningCupCanvasProps> = ({
     );
     sleeveGeo.rotateY(Math.PI);
 
-    const sleeveCanvas = createBrunSleeveCanvas();
+    const sleeveCanvas = createBrunSleeveCanvas(appearance);
     const sleeveTexture = new THREE.CanvasTexture(sleeveCanvas);
     sleeveTexture.colorSpace = THREE.SRGBColorSpace;
     sleeveTexture.generateMipmaps = true;
@@ -152,7 +154,7 @@ const CupRenderer: React.FC<SpinningCupCanvasProps> = ({
     let disposed = false;
     document.fonts.ready.then(() => {
       if (disposed) return;
-      sleeveTexture.image = createBrunSleeveCanvas();
+      sleeveTexture.image = createBrunSleeveCanvas(appearance);
       sleeveTexture.needsUpdate = true;
       wakeRef.current?.();
     });
@@ -451,11 +453,12 @@ const CupRenderer: React.FC<SpinningCupCanvasProps> = ({
         container.removeChild(renderer.domElement);
       }
     };
-  }, [steam]);
+  }, [steam, appearance]);
 
   return (
     <div
       ref={mountRef}
+      data-cup-appearance={appearance}
       style={{ touchAction: interactive ? 'pan-y' : 'auto' }}
       className={`relative cursor-grab active:cursor-grabbing select-none flex items-center justify-center ${className}`}
       onClickCapture={(event) => {

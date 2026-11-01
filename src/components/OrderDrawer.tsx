@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Plus, Minus, Trash2, Check, ArrowRight, ShieldCheck, Truck, Coffee } from 'lucide-react';
 import { ProductItem, CartItem } from '../types';
+import { SpinningCupCanvas } from './SpinningCupCanvas';
 
 interface OrderDrawerProps {
   isOpen: boolean;
@@ -122,11 +123,18 @@ export const OrderDrawer: React.FC<OrderDrawerProps> = ({
                           key={item.product.id}
                           className="p-3.5 bg-white rounded-xl border border-[#DFD8CB] flex gap-3 items-center shadow-xs hover:border-[#2F1207]/40 transition-colors"
                         >
-                          <div className="w-16 h-20 bg-[#F5F2EB] rounded-lg flex items-center justify-center overflow-hidden shrink-0 p-1">
-                            <img
-                              src={item.product.image}
-                              alt={item.product.name}
-                              className="w-full h-full object-contain"
+                          <div
+                            className="w-20 h-28 bg-[#F5F2EB] rounded-lg flex items-center justify-center overflow-hidden shrink-0"
+                            role="img"
+                            aria-label={`${item.product.name} dark BRUN cup preview`}
+                          >
+                            <SpinningCupCanvas
+                              className="w-full h-full"
+                              appearance="dark"
+                              speed={0.45}
+                              steam={false}
+                              interactive={false}
+                              active={isOpen}
                             />
                           </div>
                           <div className="flex-1 min-w-0">

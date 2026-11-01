@@ -1,5 +1,6 @@
-let cachedCanvas: HTMLCanvasElement | null = null;
-let cachedFontStatus: FontFaceSetLoadStatus | null = null;
+export type CupAppearance = 'light' | 'dark';
+
+const cachedCanvases = new Map<CupAppearance, { canvas: HTMLCanvasElement; fontStatus: FontFaceSetLoadStatus }>();
 
 /**
  * Creates a high-resolution 4096x2048 canvas texture for the BRÜN paper cup sleeve.
@@ -10,22 +11,25 @@ let cachedFontStatus: FontFaceSetLoadStatus | null = null;
  * 4. Left line-art coffee cup with steam.
  * 5. Right line-art croissant / pastry illustration.
  */
-export function createBrunSleeveCanvas(): HTMLCanvasElement {
-  if (cachedCanvas && cachedFontStatus === document.fonts.status) return cachedCanvas;
+export function createBrunSleeveCanvas(appearance: CupAppearance = 'light'): HTMLCanvasElement {
+  const cached = cachedCanvases.get(appearance);
+  if (cached && cached.fontStatus === document.fonts.status) return cached.canvas;
   const canvas = document.createElement('canvas');
   canvas.width = 4096;
   canvas.height = 2048;
   const ctx = canvas.getContext('2d');
   if (!ctx) throw new Error('BRUN: Unable to create the cup sleeve artwork.');
 
-  const brandColor = '#2F1207'; // Deep, bold, high-contrast dark roasted espresso brown
+  const isDark = appearance === 'dark';
+  const brandColor = isDark ? '#FFFFFF' : '#2F1207';
+  const paperColor = isDark ? '#17120F' : '#FFFFFF';
 
   // 1. Crisp white paper sleeve base
-  ctx.fillStyle = '#FFFFFF';
+  ctx.fillStyle = paperColor;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   // Subtle organic paper fibers
-  ctx.fillStyle = 'rgba(47, 18, 7, 0.025)';
+  ctx.fillStyle = isDark ? 'rgba(255, 255, 255, 0.025)' : 'rgba(47, 18, 7, 0.025)';
   for (let i = 0; i < 600; i++) {
     const px = Math.random() * canvas.width;
     const py = Math.random() * canvas.height;
@@ -33,7 +37,7 @@ export function createBrunSleeveCanvas(): HTMLCanvasElement {
   }
 
   // Top & bottom paper seam borders
-  ctx.strokeStyle = 'rgba(47, 18, 7, 0.15)';
+  ctx.strokeStyle = isDark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(47, 18, 7, 0.15)';
   ctx.lineWidth = 4;
   ctx.beginPath();
   ctx.moveTo(0, 10);
@@ -114,7 +118,7 @@ export function createBrunSleeveCanvas(): HTMLCanvasElement {
     ctx.fill();
 
     // Bean inner S-curve crease line
-    ctx.strokeStyle = '#FFFFFF';
+    ctx.strokeStyle = paperColor;
     ctx.lineWidth = 4.8;
     ctx.lineCap = 'round';
     ctx.beginPath();
@@ -276,7 +280,6 @@ export function createBrunSleeveCanvas(): HTMLCanvasElement {
   drawBrunInsignia(0, canvas.height * 0.5);
   drawBrunInsignia(canvas.width, canvas.height * 0.5);
 
-  cachedCanvas = canvas;
-  cachedFontStatus = document.fonts.status;
+  cachedCanvases.set(appearance, { canvas, fontStatus: document.fonts.status });
   return canvas;
 }

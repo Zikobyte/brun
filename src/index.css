@@ -147,7 +147,8 @@
   .animate-marquee-left,
   .animate-marquee-right,
   .animate-footer-marquee,
-  .animate-spin {
+  .animate-spin,
+  .animate-pulse {
     animation: none;
   }
 

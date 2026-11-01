@@ -24,7 +24,7 @@ export function getCupPose(progress: number, entrance: number, width: number, he
   const canvasHeight = width < 640 ? 480 : width < 768 ? 580 : 650;
   const fitScale = Math.min(1, Math.max(0.25, (height - 96) / canvasHeight), (width - 32) / canvasWidth);
   const baseScale = fitScale * (width < 640 ? 0.88 : 1.05);
-  const baseX = -Math.min(width * 0.18, Math.max(0, (width - canvasWidth * baseScale) / 2 - 16));
+  const baseX = -Math.min(width * (width < 640 ? 0.035 : 0.07), Math.max(0, (width - canvasWidth * baseScale) / 2 - 16));
   const baseY = -Math.min(height * 0.025, Math.max(0, (height - canvasHeight * baseScale) / 2 - 16));
 
   if (progress <= 0.32) {
