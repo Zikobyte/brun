@@ -1,0 +1,168 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-bebas: 'Bebas Neue', 'Anton', sans-serif;
+    --font-cinzel: 'Cinzel', serif;
+    --font-script: 'Caveat', cursive;
+    --font-sans: 'Plus Jakarta Sans', sans-serif;
+  }
+}
+
+.font-bebas {
+  font-family: var(--font-bebas);
+}
+
+.font-cinzel {
+  font-family: var(--font-cinzel);
+}
+
+.font-script {
+  font-family: var(--font-script);
+}
+
+.font-sans-clean {
+  font-family: var(--font-sans);
+}
+
+/* Authentic craft parchment paper grain overlay */
+.bg-parchment {
+  background-color: #F8F6F0;
+  background-image: radial-gradient(rgba(139, 69, 19, 0.03) 1px, transparent 0),
+                    radial-gradient(rgba(180, 83, 9, 0.02) 1px, #F8F6F0 0);
+  background-size: 24px 24px, 48px 48px;
+  background-position: 0 0, 12px 12px;
+}
+
+/* Vintage letterpress textured look */
+.text-letterpress {
+  letter-spacing: -0.02em;
+  text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.6), -1px -1px 0px rgba(0, 0, 0, 0.05);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+}
+::-webkit-scrollbar-track {
+  background: #EFECE3;
+}
+::-webkit-scrollbar-thumb {
+  background: #2F1207;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #1a0a04;
+}
+
+/* Constant 3D Turntable Spin for Hero Cup */
+@keyframes heroCupSpin {
+  0% {
+    transform: perspective(1200px) rotateY(0deg);
+  }
+  100% {
+    transform: perspective(1200px) rotateY(360deg);
+  }
+}
+
+.animate-hero-spin {
+  animation: heroCupSpin 7s linear infinite;
+  transform-style: preserve-3d;
+}
+
+/* Infinite Marquee Animations for 2-Row Carousel */
+@keyframes marquee-scroll-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes marquee-scroll-right {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.animate-marquee-left {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll-left 38s linear infinite;
+}
+
+.animate-marquee-right {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll-right 38s linear infinite;
+}
+
+.animate-marquee-left:hover,
+.animate-marquee-right:hover {
+  animation-play-state: paused;
+}
+
+[data-animation-paused="true"] .animate-marquee-left,
+[data-animation-paused="true"] .animate-marquee-right {
+  animation-play-state: paused;
+}
+
+.animate-footer-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll-left 24s linear infinite;
+}
+
+.footer-wordmark-group {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: clamp(24px, 4vw, 80px);
+  padding-right: clamp(24px, 4vw, 80px);
+  font-family: var(--font-bebas);
+  font-size: clamp(100px, 24vw, 380px);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  color: white;
+  user-select: none;
+}
+
+.footer-cup {
+  width: clamp(112px, 22vw, 320px);
+  height: clamp(160px, 30vw, 420px);
+}
+
+.footer-brand-row:hover .animate-footer-marquee,
+[data-animation-paused="true"] .animate-footer-marquee {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-hero-spin,
+  .animate-marquee-left,
+  .animate-marquee-right,
+  .animate-footer-marquee,
+  .animate-spin {
+    animation: none;
+  }
+
+  .footer-wordmark-group {
+    font-size: clamp(64px, 18vw, 280px);
+    padding-right: 0;
+  }
+
+  .footer-wordmark-group + .footer-wordmark-group,
+  .footer-wordmark-group span + span {
+    display: none;
+  }
+
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0s !important;
+  }
+}

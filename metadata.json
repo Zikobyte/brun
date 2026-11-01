@@ -1,0 +1,6 @@
+{
+  "name": "BRÜN Craft Coffee Experience",
+  "description": "An interactive scroll-driven specialty coffee experience mimicking award-winning dynamic brand storytelling with 3D product transitions, flavor notes, and roastery pairings.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
