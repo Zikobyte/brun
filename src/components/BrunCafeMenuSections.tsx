@@ -30,13 +30,11 @@ interface BrunCafeMenuSectionsProps {
   onOpenOrder: () => void;
 }
 
-export const BrunCafeMenuSections: React.FC<BrunCafeMenuSectionsProps> = ({ onOpenOrder }) => {
+export const BrunCafeMenuSections: React.FC<BrunCafeMenuSectionsProps> = React.memo(({ onOpenOrder }) => {
   // Active clip index for the infinite looping video section
   const [activeVideoIdx, setActiveVideoIdx] = useState(0);
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [isSubscribed, setIsSubscribed] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const videoInView = useInView(videoRef);
   const marqueeRef = useRef<HTMLDivElement>(null);
   const marqueeInView = useInView(marqueeRef);
   const footerMarqueeRef = useRef<HTMLDivElement>(null);
@@ -78,27 +76,6 @@ export const BrunCafeMenuSections: React.FC<BrunCafeMenuSectionsProps> = ({ onOp
 
     return () => ctx.revert();
   }, [reduceMotion]);
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-    const updatePlayback = () => {
-      if (!videoInView || document.hidden || reduceMotion) {
-        video.pause();
-        return;
-      }
-      void video.play().catch(error => {
-        if (error instanceof DOMException && error.name === 'AbortError') return;
-        console.warn('BRUN: Cafe video playback was blocked or failed.', error);
-      });
-    };
-    updatePlayback();
-    document.addEventListener('visibilitychange', updatePlayback);
-    return () => {
-      document.removeEventListener('visibilitychange', updatePlayback);
-      video.pause();
-    };
-  }, [videoInView, activeVideoIdx, reduceMotion]);
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -193,6 +170,8 @@ export const BrunCafeMenuSections: React.FC<BrunCafeMenuSectionsProps> = ({ onOp
           >
             <div className="relative aspect-[16/10] sm:aspect-[21/9] lg:aspect-[24/9] w-full overflow-hidden">
               <img
+                loading="lazy"
+                decoding="async"
                 ref={heroImgRef}
                 src="/assets/user/uu.png"
                 alt="BRUN Coffee Shop & Bakery Flagship Exterior"
@@ -258,6 +237,8 @@ export const BrunCafeMenuSections: React.FC<BrunCafeMenuSectionsProps> = ({ onOp
               >
                 <div className="aspect-[4/3] w-full rounded-xl overflow-hidden mb-4 relative bg-neutral-900">
                   <img
+                    loading="lazy"
+                    decoding="async"
                     src={item.img}
                     alt={item.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -287,6 +268,8 @@ export const BrunCafeMenuSections: React.FC<BrunCafeMenuSectionsProps> = ({ onOp
             {/* Left: Authentic Cafe Interior Lounge Photo */}
             <motion.div {...glideLeft} className="relative aspect-square sm:aspect-[4/3] lg:aspect-square w-full rounded-2xl overflow-hidden shadow-md group bg-neutral-900">
               <img
+                loading="lazy"
+                decoding="async"
                 src="/assets/user/img1.jpg"
                 alt="BRUN Cafe Warm Sunlit Interior Dining Room"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
@@ -367,14 +350,9 @@ export const BrunCafeMenuSections: React.FC<BrunCafeMenuSectionsProps> = ({ onOp
 
           {/* 1. Full-Width Infinite Looping Video Player (No border radius, increased height, pure cinematic aesthetic) */}
           <motion.div {...revealUp} className="w-full relative rounded-none overflow-hidden bg-black shadow-2xl h-[520px] sm:h-[660px] lg:h-[800px] border-y border-[#E5DFD3] group">
-            <video
-              ref={videoRef}
+            <ViewportVideo
               src={videoList[activeVideoIdx].url}
-              preload="metadata"
-              controls={!!reduceMotion}
-              loop
-              muted
-              playsInline
+              label={videoList[activeVideoIdx].title}
               className="w-full h-full object-cover"
             />
 
@@ -431,6 +409,8 @@ export const BrunCafeMenuSections: React.FC<BrunCafeMenuSectionsProps> = ({ onOp
                     className="flex-shrink-0 w-72 sm:w-80 md:w-96 aspect-[16/11] rounded-2xl overflow-hidden shadow-md border border-[#E5DFD3] relative group bg-neutral-900 cursor-pointer"
                   >
                     <img
+                      loading="lazy"
+                      decoding="async"
                       src={item.src}
                       alt={item.label}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -462,6 +442,8 @@ export const BrunCafeMenuSections: React.FC<BrunCafeMenuSectionsProps> = ({ onOp
                     className="flex-shrink-0 w-72 sm:w-80 md:w-96 aspect-[16/11] rounded-2xl overflow-hidden shadow-md border border-[#E5DFD3] relative group bg-neutral-900 cursor-pointer"
                   >
                     <img
+                      loading="lazy"
+                      decoding="async"
                       src={item.src}
                       alt={item.label}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -584,6 +566,8 @@ export const BrunCafeMenuSections: React.FC<BrunCafeMenuSectionsProps> = ({ onOp
               className="relative rounded-3xl overflow-hidden shadow-sm aspect-square lg:aspect-auto order-2 lg:order-1 group bg-neutral-900"
             >
               <img
+                loading="lazy"
+                decoding="async"
                 src="/assets/user/img2.jpg"
                 alt="BRUN Window Bar Espresso Bar"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
@@ -659,6 +643,8 @@ export const BrunCafeMenuSections: React.FC<BrunCafeMenuSectionsProps> = ({ onOp
               className="relative rounded-3xl overflow-hidden shadow-sm aspect-square lg:aspect-auto group bg-neutral-900"
             >
               <img
+                loading="lazy"
+                decoding="async"
                 src="/assets/user/img4.jpg"
                 alt="BRUN High Bar Stool Counter"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
@@ -677,6 +663,8 @@ export const BrunCafeMenuSections: React.FC<BrunCafeMenuSectionsProps> = ({ onOp
               className="relative rounded-3xl overflow-hidden shadow-sm aspect-square lg:aspect-auto order-2 lg:order-1 group bg-neutral-900"
             >
               <img
+                loading="lazy"
+                decoding="async"
                 src="/assets/user/img6.jpg"
                 alt="BRUN Outdoor Patio Dining"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
@@ -778,6 +766,8 @@ export const BrunCafeMenuSections: React.FC<BrunCafeMenuSectionsProps> = ({ onOp
               >
                 <div className="aspect-[16/10] overflow-hidden bg-neutral-900">
                   <img
+                    loading="lazy"
+                    decoding="async"
                     src={article.image}
                     alt={article.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -974,4 +964,4 @@ export const BrunCafeMenuSections: React.FC<BrunCafeMenuSectionsProps> = ({ onOp
       </footer>
     </div>
   );
-};
+});

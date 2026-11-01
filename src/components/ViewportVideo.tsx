@@ -13,6 +13,8 @@ export const ViewportVideo: React.FC<ViewportVideoProps> = ({
 }) => {
   const ref = useRef<HTMLVideoElement>(null);
   const inView = useInView(ref);
+  const nearView = useInView(ref, { once: true, margin: '300px' });
+  const shouldLoad = nearView;
   const reduceMotion = useReducedMotion();
   const [failed, setFailed] = useState(false);
   const [blocked, setBlocked] = useState(false);
@@ -24,7 +26,7 @@ export const ViewportVideo: React.FC<ViewportVideoProps> = ({
 
   useEffect(() => {
     const video = ref.current;
-    if (!video) return;
+    if (!video || !shouldLoad) return;
     let disposed = false;
     const updatePlayback = () => {
       if (!active || !inView || document.hidden || reduceMotion || failed) {
@@ -44,13 +46,13 @@ export const ViewportVideo: React.FC<ViewportVideoProps> = ({
       document.removeEventListener('visibilitychange', updatePlayback);
       video.pause();
     };
-  }, [src, label, active, inView, reduceMotion, failed]);
+  }, [src, label, active, inView, reduceMotion, failed, shouldLoad]);
 
   return (
     <>
       <video
         ref={ref}
-        src={src}
+        src={shouldLoad ? src : undefined}
         aria-label={label}
         className={className}
         preload="metadata"

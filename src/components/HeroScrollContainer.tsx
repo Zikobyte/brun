@@ -850,7 +850,9 @@ export const HeroScrollContainer: React.FC<HeroScrollContainerProps> = ({
                       <img
                         src={item.image}
                         alt={item.name}
-                        className="max-h-full max-w-full object-contain transition-all duration-500 group-hover:scale-105"
+                        loading="lazy"
+                        decoding="async"
+                        className="max-h-full max-w-full object-contain transition-transform duration-500 group-hover:scale-105"
                       />
                     )}
                   </div>

@@ -1,9 +1,9 @@
 export type CupAppearance = 'light' | 'dark';
 
-const cachedCanvases = new Map<CupAppearance, { canvas: HTMLCanvasElement; fontStatus: FontFaceSetLoadStatus }>();
+const cachedCanvases = new Map<string, { canvas: HTMLCanvasElement; fontStatus: FontFaceSetLoadStatus }>();
 
 /**
- * Creates a high-resolution 4096x2048 canvas texture for the BRÜN paper cup sleeve.
+ * Draws the BRÜN sleeve in a fixed artwork coordinate space at the requested resolution.
  * Exactly matches the reference image:
  * 1. "B R Ü N" in rich dark brown espresso (#2F1207) with two distinct dots above Ü.
  * 2. Horizontal divider line with central tilted coffee bean with curved white crease.
@@ -11,14 +11,18 @@ const cachedCanvases = new Map<CupAppearance, { canvas: HTMLCanvasElement; fontS
  * 4. Left line-art coffee cup with steam.
  * 5. Right line-art croissant / pastry illustration.
  */
-export function createBrunSleeveCanvas(appearance: CupAppearance = 'light'): HTMLCanvasElement {
-  const cached = cachedCanvases.get(appearance);
+export function createBrunSleeveCanvas(appearance: CupAppearance = 'light', textureWidth = 2048): HTMLCanvasElement {
+  const cacheKey = `${appearance}:${textureWidth}`;
+  const cached = cachedCanvases.get(cacheKey);
   if (cached && cached.fontStatus === document.fonts.status) return cached.canvas;
   const canvas = document.createElement('canvas');
-  canvas.width = 4096;
-  canvas.height = 2048;
+  canvas.width = textureWidth;
+  canvas.height = textureWidth / 2;
   const ctx = canvas.getContext('2d');
   if (!ctx) throw new Error('BRUN: Unable to create the cup sleeve artwork.');
+  const artworkWidth = 4096;
+  const artworkHeight = 2048;
+  ctx.scale(canvas.width / artworkWidth, canvas.height / artworkHeight);
 
   const isDark = appearance === 'dark';
   const brandColor = isDark ? '#FFFFFF' : '#2F1207';
@@ -26,13 +30,13 @@ export function createBrunSleeveCanvas(appearance: CupAppearance = 'light'): HTM
 
   // 1. Crisp white paper sleeve base
   ctx.fillStyle = paperColor;
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillRect(0, 0, artworkWidth, artworkHeight);
 
   // Subtle organic paper fibers
   ctx.fillStyle = isDark ? 'rgba(255, 255, 255, 0.025)' : 'rgba(47, 18, 7, 0.025)';
   for (let i = 0; i < 600; i++) {
-    const px = Math.random() * canvas.width;
-    const py = Math.random() * canvas.height;
+    const px = Math.random() * artworkWidth;
+    const py = Math.random() * artworkHeight;
     ctx.fillRect(px, py, Math.random() * 3 + 1, Math.random() * 3 + 1);
   }
 
@@ -41,9 +45,9 @@ export function createBrunSleeveCanvas(appearance: CupAppearance = 'light'): HTM
   ctx.lineWidth = 4;
   ctx.beginPath();
   ctx.moveTo(0, 10);
-  ctx.lineTo(canvas.width, 10);
-  ctx.moveTo(0, canvas.height - 10);
-  ctx.lineTo(canvas.width, canvas.height - 10);
+  ctx.lineTo(artworkWidth, 10);
+  ctx.moveTo(0, artworkHeight - 10);
+  ctx.lineTo(artworkWidth, artworkHeight - 10);
   ctx.stroke();
 
   // Master function to render the exact BRÜN insignia lockup at any coordinate
@@ -274,12 +278,12 @@ export function createBrunSleeveCanvas(appearance: CupAppearance = 'light'): HTM
   };
 
   // Render on front face (u = 0.5)
-  drawBrunInsignia(canvas.width * 0.5, canvas.height * 0.5);
+  drawBrunInsignia(artworkWidth * 0.5, artworkHeight * 0.5);
 
   // Render on opposite face (u = 0 and u = 1.0)
-  drawBrunInsignia(0, canvas.height * 0.5);
-  drawBrunInsignia(canvas.width, canvas.height * 0.5);
+  drawBrunInsignia(0, artworkHeight * 0.5);
+  drawBrunInsignia(artworkWidth, artworkHeight * 0.5);
 
-  cachedCanvases.set(appearance, { canvas, fontStatus: document.fonts.status });
+  cachedCanvases.set(cacheKey, { canvas, fontStatus: document.fonts.status });
   return canvas;
 }

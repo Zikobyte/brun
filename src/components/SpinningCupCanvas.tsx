@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { useInView } from 'motion/react';
 import { createBrunSleeveCanvas, type CupAppearance } from '../utils/sleeveTexture';
+import { getCupRenderBudget } from '../utils/renderBudget';
 
 interface SpinningCupCanvasProps {
   className?: string;
@@ -46,6 +47,7 @@ const CupRenderer: React.FC<SpinningCupCanvasProps> = ({
     const container = mountRef.current;
     const width = container.clientWidth || 320;
     const height = container.clientHeight || 320;
+    const budget = getCupRenderBudget(width, height, window.innerWidth, window.devicePixelRatio);
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(38, width / height, 0.1, 100);
@@ -64,8 +66,8 @@ const CupRenderer: React.FC<SpinningCupCanvasProps> = ({
       return;
     }
     rendererRef.current = renderer;
+    renderer.setPixelRatio(budget.pixelRatio);
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.15;
@@ -103,7 +105,7 @@ const CupRenderer: React.FC<SpinningCupCanvasProps> = ({
     const cupHeight = 3.3;
 
     // Cup Body
-    const cupGeo = new THREE.CylinderGeometry(topRadius, bottomRadius, cupHeight, 64, 1, false);
+    const cupGeo = new THREE.CylinderGeometry(topRadius, bottomRadius, cupHeight, budget.radialSegments, 1, false);
     const cupMat = new THREE.MeshStandardMaterial({
       color: appearance === 'dark' ? 0x17120f : 0xf9f7f2,
       roughness: 0.88,
@@ -137,13 +139,13 @@ const CupRenderer: React.FC<SpinningCupCanvasProps> = ({
       sleeveTopRadius,
       sleeveBottomRadius,
       sleeveHeight,
-      64,
+      budget.radialSegments,
       1,
       true
     );
     sleeveGeo.rotateY(Math.PI);
 
-    const sleeveCanvas = createBrunSleeveCanvas(appearance);
+    const sleeveCanvas = createBrunSleeveCanvas(appearance, budget.textureWidth);
     const sleeveTexture = new THREE.CanvasTexture(sleeveCanvas);
     sleeveTexture.colorSpace = THREE.SRGBColorSpace;
     sleeveTexture.generateMipmaps = true;
@@ -152,9 +154,9 @@ const CupRenderer: React.FC<SpinningCupCanvasProps> = ({
     sleeveTexture.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
     sleeveTexture.needsUpdate = true;
     let disposed = false;
-    document.fonts.ready.then(() => {
+    if (document.fonts.status !== 'loaded') document.fonts.ready.then(() => {
       if (disposed) return;
-      sleeveTexture.image = createBrunSleeveCanvas(appearance);
+      sleeveTexture.image = createBrunSleeveCanvas(appearance, budget.textureWidth);
       sleeveTexture.needsUpdate = true;
       wakeRef.current?.();
     });
@@ -348,12 +350,15 @@ const CupRenderer: React.FC<SpinningCupCanvasProps> = ({
     };
 
     const wake = () => {
-      if (animId !== null) cancelAnimationFrame(animId);
-      animId = null;
-      lastTime = null;
-      if (!disposed && inView && settingsRef.current.active && !document.hidden) {
-        animId = requestAnimationFrame(animate);
+      if (disposed || !inView || !settingsRef.current.active || document.hidden) {
+        if (animId !== null) cancelAnimationFrame(animId);
+        animId = null;
+        lastTime = null;
+        return;
       }
+      if (animId !== null) return;
+      lastTime = null;
+      animId = requestAnimationFrame(animate);
     };
     wakeRef.current = wake;
     const observer = new IntersectionObserver(([entry]) => {
@@ -364,20 +369,29 @@ const CupRenderer: React.FC<SpinningCupCanvasProps> = ({
     document.addEventListener('visibilitychange', wake);
     reduceMotion.addEventListener('change', wake);
 
+    let previousWidth = width;
+    let previousHeight = height;
+    let previousPixelRatio = budget.pixelRatio;
     const handleResize = () => {
       if (!container || !rendererRef.current) return;
       const w = container.clientWidth;
       const h = container.clientHeight;
       if (!w || !h) return;
+      const nextBudget = getCupRenderBudget(w, h, window.innerWidth, window.devicePixelRatio);
+      if (w === previousWidth && h === previousHeight && nextBudget.pixelRatio === previousPixelRatio) return;
+      previousWidth = w;
+      previousHeight = h;
+      previousPixelRatio = nextBudget.pixelRatio;
       camera.aspect = w / h;
       camera.position.z = Math.max(7.5, 4.8 / camera.aspect);
       camera.updateProjectionMatrix();
-      rendererRef.current.setSize(w, h);
+      renderer.setPixelRatio(nextBudget.pixelRatio);
+      renderer.setSize(w, h);
       wake();
     };
     const resizeObserver = new ResizeObserver(handleResize);
     resizeObserver.observe(container);
-    handleResize();
+    camera.position.z = Math.max(7.5, 4.8 / camera.aspect);
 
     // Interactive Drag
     const onPointerDown = (e: PointerEvent) => {
@@ -481,6 +495,7 @@ const CupRenderer: React.FC<SpinningCupCanvasProps> = ({
 export const SpinningCupCanvas: React.FC<SpinningCupCanvasProps> = (props) => {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true });
+  const currentlyInView = useInView(ref);
   const [initialized, setInitialized] = useState(false);
   useEffect(() => {
     if (inView && props.active !== false) setInitialized(true);
@@ -488,7 +503,7 @@ export const SpinningCupCanvas: React.FC<SpinningCupCanvasProps> = (props) => {
 
   return (
     <div ref={ref} className={props.className ?? 'w-full h-full min-h-[280px]'}>
-      {initialized && <CupRenderer {...props} className="w-full h-full min-h-[inherit]" />}
+      {initialized && <CupRenderer {...props} active={props.active !== false && currentlyInView} className="w-full h-full min-h-[inherit]" />}
     </div>
   );
 };

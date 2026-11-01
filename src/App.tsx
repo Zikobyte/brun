@@ -11,7 +11,6 @@ import { ProductItem, CartItem } from './types';
 import { cafeAudio } from './utils/audio';
 import { HERO_CHAPTER_PROGRESS } from './utils/heroAnimation';
 import { PRODUCT_PRICES } from './utils/pricing';
-import { CAFE_VIDEOS } from './utils/media';
 
 // 5 physical products for the lineup in Video 2 & store
 const ALL_PRODUCTS: ProductItem[] = [
@@ -55,8 +54,7 @@ const ALL_PRODUCTS: ProductItem[] = [
     subtitle: '12 oz Craft Bag',
     size: '12 oz (340g)',
     format: 'Whole Bean Bag',
-    image: '/assets/user/img3.jpg',
-    video: CAFE_VIDEOS.espresso,
+    image: 'https://pub-ee5a826221134162b53dc4a7b9eeca2a.r2.dev/cup.png',
     price: PRODUCT_PRICES.wholeBean,
     description: 'Specialty Grade heirloom Arabica beans roasted on our vintage cast iron drum. Notes of jasmine, bergamot, and caramel.',
     tempServed: 'Whole Bean',
@@ -67,8 +65,7 @@ const ALL_PRODUCTS: ProductItem[] = [
     subtitle: 'Ready to Drink',
     size: '12 fl oz Can',
     format: 'Nitro Can',
-    image: '/assets/user/img6.jpg',
-    video: CAFE_VIDEOS.espresso,
+    image: 'https://pub-ee5a826221134162b53dc4a7b9eeca2a.r2.dev/cup.png',
     price: PRODUCT_PRICES.nitroCan,
     description: 'Single-serve nitrogen-charged cold brew can. Crack open to initiate instant cascading velvet foam.',
     tempServed: 'Shake & Pour Ice Cold',
@@ -85,6 +82,7 @@ export default function App() {
   const [isPreloaderDone, setIsPreloaderDone] = useState(() =>
     document.documentElement.hasAttribute('data-brun-preloader-started'));
   const handlePreloaderComplete = useCallback(() => setIsPreloaderDone(true), []);
+  const handleOpenOrder = useCallback(() => setIsOrderOpen(true), []);
 
   useEffect(() => {
     // Lives with the document, including across development module reloads.
@@ -167,7 +165,7 @@ export default function App() {
       <Navbar
         onOpenMenu={() => setIsMenuOpen(true)}
         onOpenSearch={() => setIsSearchOpen(true)}
-        onOpenOrder={() => setIsOrderOpen(true)}
+        onOpenOrder={handleOpenOrder}
         cartCount={cartItems.reduce((acc, i) => acc + i.quantity, 0)}
         isAudioPlaying={isAudioPlaying}
         onToggleAudio={handleToggleAudio}
@@ -179,7 +177,7 @@ export default function App() {
       <main className="flex-1 w-full">
         <HeroScrollContainer
           onOpenRoaster={() => setIsRoasterOpen(true)}
-          onOpenOrder={() => setIsOrderOpen(true)}
+          onOpenOrder={handleOpenOrder}
           onAddToCart={handleAddToCart}
           activeChapter={activeChapter}
           setActiveChapter={setActiveChapter}

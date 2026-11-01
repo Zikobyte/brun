@@ -49,11 +49,16 @@ View your app in AI Studio: https://ai.studio/apps/56d5463b-9818-4881-889d-c1fd6
   15,000, with the naira symbol and thousands separators. Cart totals and the
   35,000-naira free-shipping threshold use the same formatter (totals may exceed
   the unit-price range). This is a new price list, not an exchange-rate conversion.
-- The Whole Bean and Nitro Slim Can lineup cards use the supplied MP4 as video
-  previews. Specialty Lattes, Tea & Other Beverages, and Pastries & Baked Goods
+- The Whole Bean and Nitro Slim Can lineup cards use the supplied `cup.png` image.
+  Specialty Lattes, Tea & Other Beverages, and Pastries & Baked Goods
   have video panels above their prices, using the existing rounded-card styling.
   These videos pause offscreen/in hidden tabs and offer controls for reduced
   motion or blocked autoplay; failed media is reported visibly.
+- Below-fold images decode asynchronously and load lazily. Video sources are
+  attached only near the viewport. Cup drawing buffers have mobile/desktop pixel
+  budgets, and sleeve textures use 1K for small/mobile canvases or 2K for larger
+  desktop canvases instead of uploading a 4K texture per cup. Menu sections are
+  memoized independently of hero chapter updates.
 - The cafe location is Ikeja, Lagos, Nigeria across the footer, story and navigation.
   The cafe video only autoplays while visible.
 - Reduced-motion preferences disable automatic cup rotation, gallery movement
